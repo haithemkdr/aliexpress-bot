@@ -76,7 +76,7 @@ def confirm_order(update: Update, context: CallbackContext):
 
 # Main Function
 def main():
-    updater = Updater("YOUR_BOT_TOKEN")
+    updater = Updater("7796931705:AAHoMw6nm5B0aFJqdGzKss1nTxScUjeMPB4")
     dp = updater.dispatcher
 
     dp.add_handler(CommandHandler("start", start))
