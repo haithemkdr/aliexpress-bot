@@ -5,13 +5,13 @@ import os
 from aliexpress_api import AliexpressApi
 
 # Configuration
-TOKEN = "7796931705:AAEXK6Grrh4LttcUBs2bOLGGLeNtQbwCvgk"  # Token بوت تيليجرام
-ALIEXPRESS_APP_KEY = os.getenv('ALIEXPRESS_APP_KEY')  # App Key من AliExpress
-ALIEXPRESS_APP_SECRET = os.getenv('ALIEXPRESS_APP_SECRET')  # App Secret من AliExpress
+TOKEN = "7796931705:AAEXK6Grrh4LttcUBs2bOLGGLeNtQbwCvgk"  #  Token  بوت  تيليجرام
+ALIEXPRESS_APP_KEY = os.getenv('ALIEXPRESS_APP_KEY')  #  App Key  من  AliExpress
+ALIEXPRESS_APP_SECRET = os.getenv('ALIEXPRESS_APP_SECRET')  #  App Secret  من  AliExpress
 BINANCE_API_URL = "https://api.binance.com/api/v3/ticker/price?symbol=USDTDZD"
 COMMISSIONS = [(0, 10, 1.5), (10, 50, 1.3), (50, 100, 1.2), (100, float('inf'), 1.1)]
 
-# تهيئة AliExpress API
+#  تهيئة  AliExpress API
 aliexpress = AliexpressApi(key=ALIEXPRESS_APP_KEY, secret=ALIEXPRESS_APP_SECRET)
 
 # Helper Functions
@@ -19,7 +19,7 @@ def fetch_aliexpress_product(url):
     try:
         product_id = aliexpress.get_product_id(url)
         product_data = aliexpress.get_product_details(product_id)
-        print(f"Product data: {product_data}")  # لطباعة product_data في logs
+        print(f"Product data: {product_data}")  #  لطباعة  product_data  في  logs
         return product_data
     except Exception as e:
         print(f"Error fetching product details: {e}")
@@ -50,7 +50,7 @@ def start(update: Update, context: CallbackContext):
 
 def handle_product_link(update: Update, context: CallbackContext):
     user_message = update.message.text
-    
+
     if "aliexpress.com" not in user_message:
         update.message.reply_text("يرجى إرسال رابط منتج AliExpress صحيح.")
         return
@@ -67,7 +67,7 @@ def handle_product_link(update: Update, context: CallbackContext):
     product_title = product_data.get("title", "عنوان غير معروف")
     product_price_usd = float(product_data.get("price", 0))
     shipping_cost_usd = float(product_data.get("shipping_cost", 0))
-    
+
     total_price_dzd = calculate_total_price(product_price_usd, shipping_cost_usd, exchange_rate)
 
     keyboard = [[InlineKeyboardButton("تأكيد الطلب", callback_data="confirm_order")]]
@@ -94,7 +94,7 @@ def main():
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_product_link))
     dp.add_handler(CallbackQueryHandler(confirm_order, pattern="confirm_order"))
 
-    # استخدام Webhook
+    #  استخدام  Webhook
     updater.start_webhook(listen="0.0.0.0",
                           port=int(os.environ.get('PORT', 8443)),
                           url_path=TOKEN,
