@@ -35,44 +35,44 @@ def calculate_total_price(price_usd, shipping_cost_usd, exchange_rate):
 
 # Bot Handlers
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Welcome to the AliExpress Product Bot! Send me a product link to get started.")
+    update.message.reply_text("مرحباً بك في بوت منتجات AliExpress! أرسل لي رابط المنتج للبدء.")
 
 def handle_product_link(update: Update, context: CallbackContext):
     user_message = update.message.text
     
     if "aliexpress.com" not in user_message:
-        update.message.reply_text("Please send a valid AliExpress product link.")
+        update.message.reply_text("يرجى إرسال رابط منتج AliExpress صحيح.")
         return
 
-    update.message.reply_text("Fetching product details, please wait...")
+    update.message.reply_text("جاري جلب تفاصيل المنتج، يرجى الانتظار...")
 
     product_data = fetch_aliexpress_product(user_message)
     exchange_rate = fetch_usdt_dzd_rate()
 
     if not product_data or not exchange_rate:
-        update.message.reply_text("Sorry, could not fetch product details or exchange rate.")
+        update.message.reply_text("عذرًا، تعذر جلب تفاصيل المنتج أو سعر الصرف.")
         return
 
-    product_title = product_data.get("title", "Unknown Title")
+    product_title = product_data.get("title", "عنوان غير معروف")
     product_price_usd = float(product_data.get("price", 0))
     shipping_cost_usd = float(product_data.get("shipping_cost", 0))
     
     total_price_dzd = calculate_total_price(product_price_usd, shipping_cost_usd, exchange_rate)
 
-    keyboard = [[InlineKeyboardButton("Confirm Order", callback_data="confirm_order")]]
+    keyboard = [[InlineKeyboardButton("تأكيد الطلب", callback_data="confirm_order")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    message = (f"Product: {product_title}\n"
-               f"Price: ${product_price_usd}\n"
-               f"Shipping Cost: ${shipping_cost_usd}\n"
-               f"Total Price in DZD: {total_price_dzd:.2f}\n")
+    message = (f"المنتج: {product_title}\n"
+               f"السعر: ${product_price_usd}\n"
+               f"تكلفة الشحن: ${shipping_cost_usd}\n"
+               f"السعر الإجمالي بالدينار الجزائري: {total_price_dzd:.2f}\n")
 
     update.message.reply_text(message, reply_markup=reply_markup)
 
 def confirm_order(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
-    query.edit_message_text("Your order has been confirmed. The admin will process it soon.")
+    query.edit_message_text("تم تأكيد طلبك. سيقوم المسؤول بمعالجته قريبًا.")
 
 # Main Function
 def main():
